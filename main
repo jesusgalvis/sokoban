@@ -1,0 +1,2764 @@
+#ifndef CONIO_H
+#define CONIO_H
+
+#include <windows.h>
+
+#define BLACK            0
+#define BLUE             0x1
+#define GREEN            0x2
+#define AQUA             0x3
+#define RED              0x4
+#define PURPLE           0x5
+#define YELLOW           0x6
+#define WHITE            0x7
+#define GRAY             0x8
+#define LIGHT_BLUE       0x9
+#define LIGHT_GREEN      0xA
+#define LIGHT_AQUA       0xB
+#define LIGHT_RED        0xC
+#define LIGHT_PURPLE     0xD
+#define LIGHT_YELLOW     0xE
+#define LIGHT_WHITE      0xF
+
+void bgcolor(WORD color);
+void gotoxy(int x, int y);
+void textcolor(WORD textcolor);
+void scrsize(int w, int h);
+void textbgcolor(WORD textcolor, WORD bgcolor);
+void clrscr();
+int kbhit();
+
+void clrscr(){
+    system("cls");
+}
+
+void bgcolor(WORD color){
+    char scolor[10];
+    WORD bgcolor = (color & 0xF) << 4;
+    system(scolor);
+}
+
+void gotoxy(int x, int y){
+    HANDLE hConsole;
+    COORD dwPos;
+
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hConsole, dwPos);
+}
+
+void textcolor(WORD textcolor){
+    textbgcolor(textcolor, 0);
+}
+
+void textbgcolor(WORD textcolor, WORD bgcolor){
+    WORD color = (bgcolor & 0xF) << 4 | (textcolor & 0xF);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute (hConsole, color);
+}
+
+void scrsize(int w, int h){
+    COORD dwSize = {w, h};
+    SMALL_RECT Rect = {0,0,w-1,h-1};
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleScreenBufferSize(hConsole, dwSize);
+    SetConsoleWindowInfo(hConsole, TRUE, &Rect);
+}
+
+int kbhit(void)
+{
+   DWORD nEventos;
+   INPUT_RECORD *eventos;
+   DWORD leidos;
+   int retval = 0;
+   int i;
+
+   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE),
+      &nEventos);
+
+   eventos = (INPUT_RECORD *)malloc(nEventos*sizeof(INPUT_RECORD));
+   PeekConsoleInput(GetStdHandle(STD_INPUT_HANDLE),
+      eventos, nEventos, &leidos);
+   for(i = 0;  i < nEventos; i++)
+      if(eventos[i].EventType == KEY_EVENT && eventos[i].Event.KeyEvent.bKeyDown) retval = 1;
+
+   free( eventos );
+   return retval;
+}
+
+#endif // CONIO_H
+/////color
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <time.h>
+#include <windows.h>
+#define der 77
+#define izq 75
+#define arriba 72
+#define abajo 80
+#define tam 30
+
+//219 = pared
+//158 = llegada
+//206 = caja
+
+typedef struct usuario{
+	char nombre[40];
+	int movn1;
+	int movn2;
+	int movn3;
+}us;
+
+
+void llenar (int m[][tam],int s);
+
+void llenar2 (int m[][tam],int s);
+
+void llenar3 (int m[][tam],int s);
+
+void imprimir (int m[][tam]);
+
+void imprimir2 (int m[][tam]);
+
+void imprimir3 (int m[][tam]);
+
+int mover(int mapa1[][tam],us p1,int *a);
+
+int mover2(int m[][tam],us p2,int *b,us p1);
+
+int mover3(int m[][tam],us p2,int *a,us p1);
+
+int ganador(int m[][tam]);
+
+int ganador2(int m[][tam]);
+
+int ganador3(int m[][tam]);
+
+int numeros_aleatorios();
+
+int portada();
+
+int main(){
+	
+	int per1,per2,per3;
+	
+	int niv=0;
+	
+	int port=0;
+	
+	port=portada();
+	
+if(port==1){
+
+	
+	int lvl3=0;
+	us p1;
+	//system("color a0");
+	textcolor(0x9);	
+	printf(" ");
+	
+	textcolor(WHITE);
+	textcolor(0xc);	
+	gets(p1.nombre);
+	textcolor(WHITE);
+	
+	//system("color 3a");
+	
+	int mapa1[tam][tam],f=tam/2,c=tam/2;
+int cancelanivel=0;	
+	char op;
+	
+	int suert=1;
+
+do{	
+	system("cls");
+	textcolor(15);	
+	printf("\n\n\n\n\t\tIngrese su Nombre Por Favor: ");
+	
+	textcolor(WHITE);
+	textcolor(0xc);	
+	gets(p1.nombre);
+	textcolor(WHITE);
+	system("cls");
+	
+	llenar(mapa1,suert);
+	mapa1[f][c]=1;
+	
+	textcolor(10);
+	printf("\n\t\t*******************************\n\t\t Nivel 1 (modo de Juego FACIL)\n\t\t*******************************\n");
+	textcolor(WHITE);
+	
+	
+	printf("\n\t\t  Si Deseas salir Preciona x");
+
+	imprimir (mapa1);
+int nf;
+int lvl2=0;
+	nf=mover(mapa1,p1,&lvl2);
+	p1.movn1=nf;
+	p1.movn2=0;
+	p1.movn3=0;
+	
+	system("cls");
+	
+	textcolor(10);
+	printf("\n\n\t\tESTADISTICAS DEL JUGADOR\n\n\t");
+	textcolor(WHITE);	
+	if(lvl2==1){
+		niv=1;
+	}
+	printf("Nombre: %s \n\tNivel 1: %d Movimientos \n\tNivel 2: %d Movimientos \n\tNivel 3: %d Movimientos\n\tNiveles Logrados: %d",p1.nombre,p1.movn1,p1.movn2,p1.movn3,niv);
+
+
+	if(lvl2==0){
+	
+	textcolor(0xc);	
+	printf("\n\n\n\n\t\tRealmete desea Salir del juego (s/n): ");
+	fflush(stdin);
+	scanf("%c",&op);	
+	textcolor(WHITE);
+		
+	}
+
+	suert++;
+	if(suert>3){
+		suert=1;
+	}
+
+
+	// nivel 2
+
+	if(lvl2==1){
+	
+	printf("\n\n\t");
+	system("pause");
+	system("cls");
+	
+	textcolor(10);
+	printf("\n\t\t*******************************\n\t\t Nivel 2 (modo de Juego MEDIO)\n\t\t*******************************\n");
+	textcolor(WHITE);	
+	
+	
+	
+	printf("\n\t\t  Si Deseas salir Preciona x\n");
+	us p2;
+	int mapa2[tam][tam];
+	llenar2(mapa2,suert);
+	mapa2[f][c]=1;
+	imprimir2 (mapa2);
+	int movimientos2;
+	
+
+
+	movimientos2=mover2(mapa2,p2,&lvl3,p1);	
+	
+	suert++;
+	if(suert>3){
+		suert=1;
+	}
+	
+	system("cls");
+	
+	textcolor(10);
+	printf("\n\n\t\tESTADISTICAS DEL JUGADOR\n\n\t");
+	textcolor(WHITE);	
+	
+
+	printf("Nombre: %s \n\tNivel 1: %d Movimientos \n\tNivel 2: %d Movimientos \n\tNivel 3: %d Movimientos\n\tNiveles Logrados: %d",p1.nombre,p1.movn1,movimientos2,p1.movn3,niv);
+	
+	p1.movn2=movimientos2;
+	
+	if(lvl2==1&&lvl3!=1){
+	
+	textcolor(0xc);	
+	printf("\n\n\n\n\t\tRealmete desea Salir del juego (s/n): ");
+	fflush(stdin);
+	scanf("%c",&op);	
+	textcolor(WHITE);
+	
+		}
+	}
+	
+	// nivel 3
+	
+	lvl2=0;
+	if(lvl3==1){
+	
+	system("cls");
+	
+	textcolor(10);
+	printf("\n\n\t\tESTADISTICAS DEL JUGADOR\n\n\t");
+	textcolor(WHITE);	
+	if(lvl3==1){
+	niv++;
+	}
+	printf("Nombre: %s \n\tNivel 1: %d Movimientos \n\tNivel 2: %d Movimientos \n\tNivel 3: %d Movimientos\n\tNiveles Logrados: %d",p1.nombre,p1.movn1,p1.movn2,p1.movn3,niv);
+	printf("\n\n\t");
+	system("pause");
+	system("cls");
+	
+	textcolor(10);
+	printf("\n\t\t*******************************\n\t\t Nivel 3 (modo de Juego DIFICIL)\n\t\t*******************************\n");
+	textcolor(WHITE);	
+	
+	
+	
+	printf("\n\t\t  Si Deseas salir Preciona x\n");
+	us p3;
+	int lvlf=0;
+	int mapa3[tam][tam];
+	llenar3(mapa3,suert);
+	mapa3[f][c]=1;
+	imprimir3 (mapa3);
+	int movimientos3;
+	movimientos3=mover3(mapa3,p3,&lvlf,p1);	
+	p1.movn3=movimientos3;
+	suert++;
+	if(suert>3){
+		suert=1;
+	}
+	system("cls");
+	lvl3=0;	
+	textcolor(10);
+	printf("\n\n\t\tESTADISTICAS DEL JUGADOR\n\n\t");
+	textcolor(WHITE);	
+	if(lvlf==1){
+		niv++;
+	}
+	printf("Nombre: %s \n\tNivel 1: %d Movimientos \n\tNivel 2: %d Movimientos \n\tNivel 3: %d Movimientos\n\tNiveles Logrados: %d",p1.nombre,p1.movn1,p1.movn2,p1.movn3,niv);
+
+	if(lvlf==0){
+	
+	textcolor(0xc);	
+	printf("\n\n\n\n\t\tRealmete desea Salir del juego (s/n): ");
+	fflush(stdin);
+	scanf("%c",&op);	
+	textcolor(WHITE);
+		
+	}
+
+	if(lvlf==1){
+		
+		int llave=0;
+	textcolor(0xe);	
+	printf("\n\n\n\n\t\t Felicidades haz completado todos los niveles");
+	printf("\n\n\tY haz liverado la contraseña de trucos.\n");
+	printf("\n\n\t%cDeseas verla%c (s/n): ",168,63);
+	scanf("%c",&llave);
+	
+	if(llave=='s'||llave=='S'){
+		printf("\n\n\tFelicidades !!! la contrase%ca es: 1234",164);
+		printf("\n\n\t\tdesea Salir del juego (s/n): ");
+	fflush(stdin);
+	scanf("%c",&op);	
+	textcolor(WHITE);
+	}else {
+	textcolor(WHITE);			textcolor(0xc);	
+	printf("\n\n\t\tdesea Salir del juego (s/n): ");
+	fflush(stdin);
+	scanf("%c",&op);	
+	textcolor(WHITE);
+	}
+	
+
+
+
+	
+		}
+	}	
+	
+niv=0;	
+	
+}while(op=='n'||op=='N');	
+
+}	//portada
+
+	return 0;
+	
+}
+
+void llenar (int m[][tam],int s){
+	
+	int i,j;
+	
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+			m[i][j]=0;
+																																																
+			
+			 																	m[0][4]=219;	m[0][5]=219;				m[0][6]=219;	m[0][7]=219;	m[0][8]=219;	m[0][9]=219;	m[0][10]=219;	m[0][11]=219;	m[0][12]=219;	m[0][13]=219;												
+																				m[1][4]=219;								m[1][6]=158;	m[1][7]=158;	m[1][8]=158;					m[1][10]=219;								   m[1][13]=219;m[1][14]=219;m[1][15]=219;m[1][16]=219;
+																				m[2][4]=219;								m[2][6]=158;	m[2][7]=158;	m[2][8]=158;					m[2][10]=219;								   m[2][13]=219;								 														 m[2][16]=219;
+																				m[3][4]=219;								m[3][6]=158;	m[3][7]=158;	m[3][8]=158;					m[3][10]=219;								   	m[3][13]=219;							  															m[3][16]=219;
+																				m[4][4]=219;								m[4][6]=158;	m[4][7]=158;	m[4][8]=158;					m[4][10]=219;								   	/*m[4][13]=206;*/																	  				  m[4][16]=219;
+																				m[5][4]=219;																																/*m[5][13]=206;*/																					  m[5][16]=219;
+																				m[6][4]=219;				  																																																					  m[6][16]=219;						
+																				m[7][4]=219;				  																																																					  m[7][16]=219;m[7][17]=219;m[7][18]=219;m[7][19]=219;m[7][20]=219;					m[7][22]=219;m[7][23]=219;m[7][24]=219;	
+																				m[8][4]=219;																																																									  /*m[8][16]=219;*/									  m[8][20]=219;					m[8][22]=219;				  m[8][24]=219;
+																				m[9][4]=219;																																																									  /*m[9][16]=219;*/									  		m[9][20]=219;m[9][21]=219;m[9][22]=219;				  m[9][24]=219;m[9][25]=219;m[9][26]=219;
+																				m[10][4]=219;m[10][5]=219;m[10][6]=219;m[10][7]=219;m[10][8]=219;									m[10][11]=219;																																																															m[10][26]=219;							
+																																  					m[11][8]=219;																		m[11][13]=219;																												 																								m[11][26]=219;											
+																																					m[12][8]=219;																		m[12][13]=219;																																																				m[12][26]=219;
+																																					m[13][8]=219;/*m[13][9]=219;*/	m[13][11]=219;									   /*m[13][13]=219;*/																													  m[13][20]=219;m[13][21]=219;m[13][22]=219;m[13][23]=219;									m[13][26]=219;
+																																					m[14][8]=219;/*m[14][9]=219;*/											     	   /*m[14][13]=219;*/																												  m[14][20]=219;									m[14][23]=219;								m[14][26]=219;										
+																																					m[15][8]=219;																								  m[15][14]=219;				  m[15][16]=219;													  m[15][20]=219;/*m[15][21]=219;*/						m[15][23]=219;								m[15][26]=219;
+																																					m[16][8]=219;m[16][9]=219;m[16][10]=219;m[16][11]=219;m[16][12]=219;m[16][13]=219;							m[16][14]=219;	m[16][15]=219;		m[16][16]=219;	m[16][17]=219;																						/*m[16][21]=219;*/																  m[16][26]=219;
+																																																																													m[17][17]=219;									  											  								 					  m[17][26]=219;
+																																																																													m[18][17]=219;									  											  							     					  m[18][26]=219;
+																																																																													m[19][17]=219;																																	  m[19][26]=219;
+																																																																													m[20][17]=219;				   					  m[20][20]=219;/*m[20][21]=219;*/  m[20][22]=219;m[20][23]=219;								  m[20][26]=219;
+																																																																													m[21][17]=219;									  m[21][20]=219;/*m[21][21]=219;*/	  m[21][22]=219;m[21][23]=219;								  m[21][26]=219;
+																																																																													m[22][17]=219;																																	  m[22][26]=219;
+																																																																													m[23][17]=219;																  																	  m[23][26]=219;
+																																																																													m[24][17]=219;																	 																  m[24][26]=219;
+																																																																													m[25][17]=219;																													  				  m[25][26]=219;
+																																																																													m[26][17]=219;m[26][18]=219;m[26][19]=219;m[26][20]=219;m[26][21]=219;m[26][22]=219;m[26][23]=219;m[26][24]=219;m[26][25]=219;m[26][26]=219;												
+			///////////////////////////////////////////
+	
+
+			
+			
+
+			//cajas 
+			
+			/////// OPCION 1: //////////
+		
+			if(s==1){
+			m[11][22]=206;
+			m[12][22]=206;
+			
+			m[23][20]=206;
+			m[24][20]=206;
+			
+			m[23][22]=206;
+			m[24][22]=206;
+			
+			m[23][24]=206;
+			m[24][24]=206;
+			
+			m[17][20]=206;
+			m[18][20]=206;
+			
+			m[17][22]=206;
+			m[18][22]=206;
+			}
+			//////////////////////////////
+			
+			///////OPCION 2: ///////////
+			if(s==2){
+			
+			m[10][13]=206;
+			m[9][13]=206;
+			
+			m[11][22]=206;
+			m[12][22]=206;
+			
+			m[11][24]=206;
+			m[12][24]=206;
+			
+			m[17][24]=206;
+			m[18][24]=206;
+			
+			m[17][18]=206;
+			m[18][18]=206;
+			
+			
+			m[23][21]=206;
+			m[24][21]=206;
+			}
+			//////////////////////////////
+			
+			/////OPCION 3: ////////////
+			if(s==3){
+			
+			m[13][9]=206;
+			m[14][9]=206;
+			
+			m[4][13]=206;
+			m[5][13]=206;
+			
+			m[13][13]=206;
+			m[14][13]=206;
+			
+			m[8][16]=206;
+			m[9][16]=206;
+			
+			m[15][21]=206;
+			m[16][21]=206;
+			
+			m[20][21]=206;
+			m[21][21]=206;
+			}
+			/////////////////////////////
+			
+		}
+	}
+	
+
+	
+	 
+}
+
+void imprimir (int m[][tam]){
+	
+	int vor=0; //verde o rojo
+	int i,j;
+	printf("\n\n");
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+
+			
+			if(m[i][j]==1){
+			textcolor(0xc);
+			printf("%c%c",174,175);
+			textcolor(WHITE);	
+
+			}else{
+				if(m[i][j]!=206&&m[i][j]!=219&&m[i][j]!=158){
+				printf("%c%c",m[i][j],m[i][j]);
+				}
+			
+			}
+			if(m[i][j]==206){
+				
+			if(m[4][6]==206&&m[4][7]==206&&m[4][8]==206&&m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&m[1][6]==206&&m[1][7]==206&&m[1][8]==206){
+	
+				vor=1;
+			}//si gana pone verde
+			if(vor==0){	
+			textcolor(0xd);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}else{
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+				vor=0;
+			}
+			
+			
+				
+			}	
+			if(m[i][j]==219){
+			textcolor(0x9);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}
+			if(m[i][j]==158){
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+		
+			}
+
+
+			
+		}
+		printf("\n");
+	}
+	
+
+}
+
+int mover(int m[][tam],us p1,int *a){
+	
+	int perder=0;
+	char tecla;
+	
+	int mov=0,cho=0,f=tam/2,c=tam/2;
+	
+	do{
+		p1.movn1=mov;
+		textcolor(0xc);	
+		printf("%s ",p1.nombre);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf("llevas ");
+		textcolor(WHITE);	
+		
+		textcolor(0xc);	
+		printf("%d",p1.movn1);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf(" Movimientos",p1.movn1);
+		textcolor(WHITE);
+		
+
+		fflush(stdin);
+		tecla=getch();
+		
+			
+		if(tecla==der){
+		
+		
+
+		
+		
+	if(m[f][c+1]==206&&m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f+1][c+1]==206&&m[f][c+2]!=206){
+	m[f][c+1]=1;
+	m[f][c]=0;
+	m[f][c+2]=206;
+	m[f+1][c+2]=206;
+	m[f+1][c+1]=0;
+}
+		
+		if((m[f][c+1]==206&&m[f][c+2]==219)||(m[f][c+1]==206&&m[f][c+2]==206)){
+			tecla=0;
+		}
+			
+			if((m[f][c+1]==206&&m[f-1][c+1]==206)&&(m[f][c+2]!=219&&m[f-1][c+2]!=206)&&(m[f][c+2]!=206&&m[f-1][c+2]!=219)){
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+				
+			m[f][c+2]=206;
+			m[f-1][c+2]=206;
+			m[f-1][c+1]=0;
+			}//mueve caja si la toca en la derecha inferior
+				
+			if((m[f][c+1]==206&&m[f+1][c+1]==206)&&(m[f][c+2]!=219&&m[f+1][c+2]!=206)&&(m[f][c+2]!=206&&m[f+1][c+2]!=219)){
+			m[f][c+1]=1;
+			m[f][c]=0;
+			m[f][c+2]=206;
+			m[f+1][c+2]=206;
+			m[f+1][c+1]=0;
+			}//mueve caja si la toca en la derecha superior
+
+			if(m[f][c+1]==219){
+			cho=1;
+			}
+
+
+
+
+			
+			if((m[f][c+1]!=219)&&(m[f][c+1]!=206)){	
+			
+			cho=0;
+			
+			/*if(m[f][c+1]==158&&m[f][c-1]!=219||m[f][c-1]==158){
+			m[f][c+1]=1;
+			m[f][c]=158;
+			c++;
+			
+			}else{*/
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+			c++;
+					//}								
+			}
+			
+			
+			
+			
+		}		
+		if(tecla==izq){
+
+if(m[f][c-1]==206&&m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f+1][c-1]==206&&m[f][c-2]!=206){
+	m[f][c-1]=1;
+	m[f][c]=0;
+	m[f][c-2]=206;
+	m[f+1][c-2]=206;
+	m[f+1][c-1]=0;
+}	
+		
+		if((m[f][c-1]==206&&m[f][c-2]==219)||(m[f][c-1]==206&&m[f][c-2]==206)){
+			tecla=0;
+		}
+		
+				if((m[f][c-1]==206&&m[f-1][c-1]==206)&&(m[f][c-2]!=219&&m[f-1][c-2]!=206)&&(m[f][c-2]!=206&&m[f-1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f-1][c-2]=206;
+				m[f-1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir
+				
+				if((m[f][c-1]==206&&m[f+1][c-1]==206)&&(m[f][c-2]!=219&&m[f+1][c-2]!=206)&&(m[f][c-2]!=206&&m[f+1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f+1][c-2]=206;
+				m[f+1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir		
+			
+			if(m[f][c-1]==219){
+			cho=1;
+			}		
+				
+			if((m[f][c-1]!=219)&&(m[f][c-1]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f][c-1]==158&&m[f][c+1]!=219||m[f][c+1]==158){
+			m[f][c-1]=1;
+			m[f][c]=158;
+			c--;
+			
+			}else{*/
+			
+			m[f][c-1]=1;
+			m[f][c]=0;
+			c--;
+					//}	
+			
+			}//if grande
+			
+		}
+		if(tecla==abajo){
+
+			if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)||(m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==206)){
+			tecla=0;
+			}
+
+				if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]!=219&&m[f+3][c]!=206)){
+				
+				m[f+1][c]=1;
+				m[f][c]=0;
+				m[f+3][c]=206;
+				m[f+2][c]=206;
+				
+				}//arriba a abajo
+				
+		
+			
+			if(m[f+1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f+1][c]!=219)&&(m[f+1][c]!=206)){	
+				
+			cho=0;
+
+		//if(m[f-4][c]!=158&&m[f-1][c]==158){
+			/*if((m[f][c-3]!=158&&m[f][c-1]==158)||(m[f][c+1]==158&&m[f][c-1]!=219)){
+			m[f+1][c]=1;
+			m[f][c]=158;
+			f++;
+			
+			}else{*/
+			
+			m[f+1][c]=1;
+			m[f][c]=0;
+			f++;
+			//	}								
+			}
+			
+
+					
+			
+			
+			
+		}
+		if(tecla==arriba){
+		
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)||(m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==206)){
+			tecla=0;
+			}
+			
+			if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]!=219&&m[f-3][c]!=206)){
+			m[f-1][c]=1;
+			m[f][c]=0;
+			m[f-3][c]=206;
+			m[f-2][c]=206;
+			}//abajo a arriba  		
+			
+			if(m[f-1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f-1][c]!=219)&&(m[f-1][c]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f-4][c]!=158&&m[f-1][c]==158){
+				
+				m[f-1][c]=1;
+				m[f][c]=158;
+				f--;
+				
+			}else{*/
+				
+				m[f-1][c]=1;
+				m[f][c]=0;
+				f--;
+				//}	
+		
+			}				
+		
+		}
+	
+		if((tecla==arriba||tecla==abajo||tecla==der||tecla==izq)&&cho==0){
+		mov++;
+		}
+		
+	
+	if(m[4][6]==0){m[4][6]=158;		
+	}
+	if(m[4][7]==0){m[4][7]=158;		
+	}
+	if(m[4][8]==0){m[4][8]=158;
+	}
+	if(m[3][6]==0){m[3][6]=158;
+	}
+	if(m[3][7]==0){m[3][7]=158;
+	}
+	if(m[3][8]==0){m[3][8]=158;
+	}
+	if(m[2][6]==0){m[2][6]=158;		
+	}
+	if(m[2][7]==0){m[2][7]=158;
+	}
+	if(m[2][8]==0){m[2][8]=158;		
+	}
+	if(m[1][6]==0){m[1][6]=158;		
+	}
+	if(m[1][7]==0){m[1][7]=158;	
+	}
+	if(m[1][8]==0){m[1][8]=158;
+	}
+			
+	
+	system("cls");
+	textcolor(10);
+	printf("\n\t\t*******************************\n\t\t Nivel 1 (modo de Juego FACIL)\n\t\t*******************************\n");
+	textcolor(WHITE);	
+	
+	//si pierde////////////////////////
+
+/*	
+		
+		// 2 cajas 
+		//abajo con 2
+	//dos cajas arriba derecha
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==219&&m[f-1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f-2][c+1]==219&&m[f-2][c+2]==219)){
+		perder=1;
+		}
+		//dos cajas arriba izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==219&&m[f-1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==219&&m[f-2][c-2]==219)){
+		perder=1;
+		}
+		
+		//abajo acha arriba
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f-3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f-3][c-1]==219)&&m[f-1][c]==206){
+		perder=1;
+		}
+		
+		//dos cajas abajo izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==219&&m[f+1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==219&&m[f+2][c-2]==219)){
+		perder=1;
+		}
+		//dos cajas abajo der
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==219&&m[f+1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f+2][c+1]==219&&m[f+2][c+2]==219)){
+		perder=1;
+		}
+
+		//abajo acha arriba
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206&&m[f+3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&m[f+1][c-1]==206){
+		perder=1;
+		}
+		//arriba con 2
+		
+
+
+		
+	
+//para que no salga roja la entrada 
+if(m[1][6]==206||m[1][7]==206||m[1][8]==206){
+perder=0;
+}
+*/
+/////////
+
+	//perder	
+		
+		
+		if(m[f][25]==206&&m[f][26]==219){
+			perder=1;
+		}
+		
+		if(m[25][c]==206&&m[26][c]==219){
+		perder=1;
+		}
+		
+		if(m[25][c]==206&&m[26][c]==219){
+		perder=1;
+		}
+
+		if(m[15][8]==206){
+		perder=1;
+		}		
+		
+		if(m[9][23]==206){
+		perder=1;
+		}
+		
+		if(m[14][21]==206||m[14][22]==206){
+		perder=1;	
+		}
+		
+		if(m[16][8]==219&&m[15][8]==206||m[16][9]==219&&m[15][9]==206||m[16][10]==219&&m[15][10]==206||m[16][11]==219&&m[15][11]==206||m[16][12]==219&&m[15][12]==206||m[16][13]==219&&m[15][13]==206||m[16][14]==219&&m[15][14]==206||m[16][15]==219&&m[15][15]==206||m[16][16]==219&&m[15][16]==206){
+		perder=1;	
+		}
+		
+		if(m[8][19]==206||m[9][5]==206||m[8][5]==206||m[7][5]==206||m[6][5]==206||m[5][5]==206||m[4][5]==206||m[3][5]==206||m[2][5]==206||m[1][5]==206||m[1][9]==206){
+		perder=1;	
+		}
+		if(m[2][14]==206||m[2][15]==206||m[1][9]==206||m[1][11]==206||m[1][12]==206){
+		perder=1;
+		}
+		
+/*	
+	if(((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206)&&(m[f-3][c-1]==206&&m[f-3][c-2]==206))
+||((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206))){
+	perder=1;
+}
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)){
+	perder=1;
+}
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)&&(m[f+3][c-1]==206&&m[f+3][c-2]==206)){
+	perder=1;
+}
+
+
+//abajo a ariba
+if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206)&&(m[f-3][c+1]==206&&m[f-4][c+1]==206)||(m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c-1]==206&&m[f-2][c-1]==206)&&(m[f-3][c-1]==206&&m[f-4][c-1]==206)){
+	perder=1;
+}
+//arriba a abajo
+if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206)&&(m[f+3][c+1]==206&&m[f+4][c+1]==206)||(m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c-1]==206&&m[f+2][c-1]==206)&&(m[f+3][c-1]==206&&m[f+4][c-1]==206)){
+	perder=1;
+}
+*/
+
+
+////	perder
+			
+if(perder==0){
+	printf("\n\t\t  Si Deseas salir Preciona x");
+}else{
+	textcolor(0xc);
+		printf("\n\t\t  Si Deseas salir Preciona x");
+	textcolor(WHITE);
+}
+	
+	
+
+	imprimir (m);	
+	int f;
+	*a=0;
+
+	f=ganador(m);
+	
+	if(tecla=='2'||f==1){
+		*a=1;//pase al nivel 2 es (1) no pase es 2 
+		tecla='x';	
+	}
+    
+	}while(tecla!='x'&&tecla!='X');
+	
+if(tecla=='x'||tecla=='X'){
+	int rep=0,ctrep=0;
+
+	
+return mov;
+}
+
+	
+}
+
+int ganador(int m[][tam]){
+	
+	int v=0;
+	
+	if(	m[1][6]==206&&m[1][7]==206&&m[1][8]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&
+		m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&m[4][6]==206&&m[4][7]==206&&m[4][8]==206){
+			
+			printf("Presione una tecla para continuar... ");
+			getch();
+			system("cls");
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cNIVEL COMPLETADO!!!\n\n",173,173,173);
+			textcolor(WHITE);
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cFELICIDADES!!!\n\n",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cPREPARATE PARA EL SEGUNDO NIVEL!!!",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(15);
+			printf("\n\n\n\n\tPresione una tecla para continuar... ");
+			textcolor(WHITE);	
+			
+
+			getch();
+			
+			v=1;
+		}
+	return v;
+}
+
+int numeros_aleatorios(){
+	
+	int num,numant,i;
+	
+	srand(time(NULL));
+	
+	do{	
+	num=1+ rand()%3;
+	numant=1+ rand()%3;	
+	}while(numant==num);
+	
+	return numant;
+	
+}
+
+// NIVEL 2
+
+void llenar2(int m[][tam],int s){
+
+	int perder=0;
+	int i,j;
+	
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+			m[i][j]=0;
+																																																
+			
+			 													    m[0][3]=219;	m[0][4]=219;	m[0][5]=219;	m[0][6]=219;	m[0][7]=219;	m[0][8]=219;	m[0][9]=219;	m[0][10]=219;	m[0][11]=219;	m[0][12]=219;	m[0][13]=219;																													
+																	m[1][3]=219;					m[1][5]=158;	m[1][6]=158;	m[1][7]=158;	m[1][8]=158;																   	m[1][13]=219;	m[1][14]=219;	m[1][15]=219;	m[1][16]=219;	m[1][17]=219;	m[1][18]=219;	m[1][19]=219;	m[1][20]=219;	m[1][21]=219;					m[1][23]=219;	m[1][24]=219;	m[1][25]=219;	m[1][26]=219;
+																	m[2][3]=219;					m[2][5]=158;	m[2][6]=158;	m[2][7]=158;	m[2][8]=158;																   	m[2][13]=219;																													m[2][21]=219;	m[2][22]=219;	m[2][23]=219;									m[2][26]=219;	m[2][27]=219;	m[2][28]=219;
+																	m[3][3]=219;					m[3][5]=158;	m[3][6]=158;	m[3][7]=158;	m[3][8]=158;					m[3][10]=219;	m[3][11]=219;				   	m[3][13]=219;																																																									m[3][28]=219;
+																	m[4][3]=219;					m[4][5]=158;	m[4][6]=158;	m[4][7]=158;	m[4][8]=158;					m[4][10]=219;	m[4][11]=219;				   	m[4][13]=219;																	  																																								m[4][28]=219;
+																	m[5][3]=219;									m[5][6]=158;	m[5][7]=158;																					m[5][13]=219;																							  						m[5][21]=219;																									m[5][28]=219;
+																	m[6][3]=219;									m[6][6]=158;	m[6][7]=158;																					m[6][13]=219;																													m[6][21]=219; 			/*1*/					/*1*/							m[6][26]=219;					m[6][28]=219;
+																	m[7][3]=219;				  																					m[7][10]=219;									m[7][13]=219;	m[7][14]=219;	m[7][15]=219;	m[7][16]=219;	m[7][17]=219;	m[7][18]=219;	m[7][19]=219;	m[7][20]=219;	m[7][21]=219;			/*1*/					/*1*/							m[7][26]=219;					m[7][28]=219;												  
+																	m[8][3]=219;	m[8][4]=219;	m[8][5]=219;	m[8][6]=219;	m[8][7]=219;	m[8][8]=219;	m[8][9]=219;	m[8][10]=219;																																																																					m[8][28]=219;
+																																													m[9][10]=219;																																																																					m[9][28]=219;
+																																													m[10][10]=219;																					m[10][16]=219;									m[10][19]=219;					m[10][21]=219;	m[10][22]=219;	m[10][23]=219;	m[10][24]=219;	m[10][25]=219;									m[10][28]=219;
+																																  													m[11][10]=219;																																	 												m[11][22]=219;									m[11][25]=219;									m[11][28]=219;
+																																													m[12][10]=219;																									m[12][17]=219;	m[12][18]=219;																									m[12][25]=219;	/*1*/							m[12][28]=219;
+																																													m[13][10]=219;										   																													  																		m[13][25]=219;	/*1*/							m[13][28]=219;
+																																													m[14][10]=219;													m[14][14]=219;	m[14][15]=219;																									m[14][22]=219;	/*1*/ 							m[14][25]=219;									m[14][28]=219;
+																																													m[15][10]=219;													m[15][14]=219;				  																									m[15][22]=219;	/*1*/							m[15][25]=219;									m[15][28]=219;	
+																																													m[16][10]=219;	m[16][11]=219;	m[16][12]=219;	m[16][13]=219;	m[16][14]=219;	m[16][15]=219;	m[16][16]=219;	m[16][17]=219;	m[16][18]=219;	m[16][19]=219;	m[16][20]=219;					m[16][22]=219;									m[16][25]=219;	m[16][26]=219;	m[16][27]=219;	m[16][28]=219;		
+																																																																																					m[17][20]=219;	m[17][21]=219;	m[17][22]=219;	m[17][23]=219;	m[17][24]=219;	m[17][25]=219;																												
+			//cajas 																																																																																										
+																																																																																																
+																																																																																																																																																																																																																									
+			
+			/////// OPCION 1: //////////
+			if(s==1){
+			
+			m[14][23]=206;
+			m[15][23]=206;
+			
+			m[12][26]=206;
+			m[13][26]=206;
+			
+			m[6][22]=206;
+			m[7][22]=206;
+			
+			m[6][24]=206;
+			m[7][24]=206;
+			
+			m[4][23]=206;
+			m[5][23]=206;
+			
+			m[3][15]=206;
+			m[4][15]=206;	
+			
+			m[3][17]=206;
+			m[4][17]=206;
+			
+			m[3][19]=206;
+			m[4][19]=206;
+			
+			m[13][12]=206;
+			m[14][12]=206;
+
+			m[12][19]=206;
+			m[13][19]=206;
+			
+
+			
+			
+			}
+			//////////////////////////////
+			
+			///////OPCION 2: ///////////
+			if(s==2){
+			m[9][11]=206;
+			m[10][11]=206;
+			
+			m[13][13]=206;
+			m[14][13]=206;
+			
+			m[14][16]=206;
+			m[13][16]=206;
+			
+			m[13][23]=206;
+			m[14][23]=206;
+			
+			m[9][26]=206;
+			m[10][26]=206;
+			
+			m[7][24]=206;
+			m[8][24]=206;
+			
+			m[3][25]=206;
+			m[4][25]=206;
+			
+			m[4][15]=206;
+			m[5][15]=206;
+			
+			m[4][19]=206;
+			m[5][19]=206;
+			
+			m[3][16]=206;
+			m[4][16]=206;	
+			
+			}
+			//////////////////////////////
+			
+			/////OPCION 3: ////////////
+			if(s==3){
+			
+			m[10][13]=206;
+			m[11][13]=206;
+			
+			m[13][17]=206;
+			m[14][17]=206;
+			
+			m[13][20]=206;
+			m[14][20]=206;
+			
+			m[8][16]=206;
+			m[9][16]=206;
+			
+			m[6][22]=206;
+			m[7][22]=206;
+			
+			m[4][16]=206;
+			m[5][16]=206;
+			
+			m[3][23]=206;
+			m[4][23]=206;
+			
+			m[4][26]=206;
+			m[5][26]=206;
+			
+			m[13][26]=206;
+			m[14][26]=206;
+			
+			m[8][21]=206;
+			m[9][21]=206;
+			
+			}
+			/////////////////////////////
+			
+		}
+	}
+	
+
+	
+	 
+}
+
+int mover2(int m[][tam],us p2,int *b,us p1){
+	int perder=0;
+	char tecla;
+	
+	int mov2=0,cho=0,f=tam/2,c=tam/2;
+	
+	
+	do{
+		p2.movn1=mov2;
+		
+		textcolor(0xc);	
+		printf("%s ",p1.nombre);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf("llevas ");
+		textcolor(WHITE);	
+		
+		textcolor(0xc);	
+		printf("%d",p2.movn1);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf(" Movimientos",p2.movn1);
+		textcolor(WHITE);
+		
+				
+		fflush(stdin);
+		tecla=getch();
+		
+		
+			
+		if(tecla==der){
+		
+if(m[f][c+1]==206&&m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f+1][c+1]==206&&m[f][c+2]!=206){
+	m[f][c+1]=1;
+	m[f][c]=0;
+	m[f][c+2]=206;
+	m[f+1][c+2]=206;
+	m[f+1][c+1]=0;
+}
+		
+		if((m[f][c+1]==206&&m[f][c+2]==219)||(m[f][c+1]==206&&m[f][c+2]==206)){
+			tecla=0;
+		}
+			
+			if((m[f][c+1]==206&&m[f-1][c+1]==206)&&(m[f][c+2]!=219&&m[f-1][c+2]!=206)&&(m[f][c+2]!=206&&m[f-1][c+2]!=219)){
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+				
+			m[f][c+2]=206;
+			m[f-1][c+2]=206;
+			m[f-1][c+1]=0;
+			}//mueve caja si la toca en la derecha inferior
+				
+			if((m[f][c+1]==206&&m[f+1][c+1]==206)&&(m[f][c+2]!=219&&m[f+1][c+2]!=206)&&(m[f][c+2]!=206&&m[f+1][c+2]!=219)){
+			m[f][c+1]=1;
+			m[f][c]=0;
+			m[f][c+2]=206;
+			m[f+1][c+2]=206;
+			m[f+1][c+1]=0;
+			}//mueve caja si la toca en la derecha superior
+
+			if(m[f][c+1]==219){
+			cho=1;
+			}
+
+
+
+			
+			if((m[f][c+1]!=219)&&(m[f][c+1]!=206)){	
+			
+			cho=0;
+			
+			/*if(m[f][c+1]==158&&m[f][c-1]!=219||m[f][c-1]==158){
+			m[f][c+1]=1;
+			m[f][c]=158;
+			c++;
+			
+			}else{*/
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+			c++;
+					//}								
+			}
+			
+			
+			
+			
+		}		
+		if(tecla==izq){
+	
+	if(m[f][c-1]==206&&m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f+1][c-1]==206&&m[f][c-2]!=206){
+	m[f][c-1]=1;
+	m[f][c]=0;
+	m[f][c-2]=206;
+	m[f+1][c-2]=206;
+	m[f+1][c-1]=0;
+}
+		
+		if((m[f][c-1]==206&&m[f][c-2]==219)||(m[f][c-1]==206&&m[f][c-2]==206)){
+			tecla=0;
+		}
+		
+				if((m[f][c-1]==206&&m[f-1][c-1]==206)&&(m[f][c-2]!=219&&m[f-1][c-2]!=206)&&(m[f][c-2]!=206&&m[f-1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f-1][c-2]=206;
+				m[f-1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir
+				
+				if((m[f][c-1]==206&&m[f+1][c-1]==206)&&(m[f][c-2]!=219&&m[f+1][c-2]!=206)&&(m[f][c-2]!=206&&m[f+1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f+1][c-2]=206;
+				m[f+1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir		
+			
+			if(m[f][c-1]==219){
+			cho=1;
+			}		
+				
+			if((m[f][c-1]!=219)&&(m[f][c-1]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f][c-1]==158&&m[f][c+1]!=219||m[f][c+1]==158){
+			m[f][c-1]=1;
+			m[f][c]=158;
+			c--;
+			
+			}else{*/
+			
+			m[f][c-1]=1;
+			m[f][c]=0;
+			c--;
+					//}	
+			
+			}//if grande
+			
+		}
+		if(tecla==abajo){
+
+			if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)||(m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==206)){
+			tecla=0;
+			}
+
+				if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]!=219&&m[f+3][c]!=206)){
+				
+				m[f+1][c]=1;
+				m[f][c]=0;
+				m[f+3][c]=206;
+				m[f+2][c]=206;
+				
+				}//arriba a abajo
+				
+		
+			
+			if(m[f+1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f+1][c]!=219)&&(m[f+1][c]!=206)){	
+				
+			cho=0;
+
+		//if(m[f-4][c]!=158&&m[f-1][c]==158){
+			/*if((m[f][c-3]!=158&&m[f][c-1]==158)||(m[f][c+1]==158&&m[f][c-1]!=219)){
+			m[f+1][c]=1;
+			m[f][c]=158;
+			f++;
+			
+			}else{*/
+			
+			m[f+1][c]=1;
+			m[f][c]=0;
+			f++;
+			//	}								
+			}
+			
+
+					
+			
+			
+			
+		}
+		if(tecla==arriba){
+		
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)||(m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==206)){
+			tecla=0;
+			}
+			
+			if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]!=219&&m[f-3][c]!=206)){
+			m[f-1][c]=1;
+			m[f][c]=0;
+			m[f-3][c]=206;
+			m[f-2][c]=206;
+			}//abajo a arriba  		
+			
+			if(m[f-1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f-1][c]!=219)&&(m[f-1][c]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f-4][c]!=158&&m[f-1][c]==158){
+				
+				m[f-1][c]=1;
+				m[f][c]=158;
+				f--;
+				
+			}else{*/
+				
+				m[f-1][c]=1;
+				m[f][c]=0;
+				f--;
+				//}	
+		
+			}				
+		
+		}
+	
+		if((tecla==arriba||tecla==abajo||tecla==der||tecla==izq)&&cho==0){
+		mov2++;
+		}
+		
+	
+	if(m[4][6]==0){m[4][6]=158;		
+	}
+	if(m[4][7]==0){m[4][7]=158;		
+	}
+	if(m[4][8]==0){m[4][8]=158;
+	}
+	if(m[3][6]==0){m[3][6]=158;
+	}
+	if(m[3][7]==0){m[3][7]=158;
+	}
+	if(m[3][8]==0){m[3][8]=158;
+	}
+	if(m[2][6]==0){m[2][6]=158;		
+	}
+	if(m[2][7]==0){m[2][7]=158;
+	}
+	if(m[2][8]==0){m[2][8]=158;		
+	}
+	if(m[1][6]==0){m[1][6]=158;		
+	}
+	if(m[1][7]==0){m[1][7]=158;	
+	}
+	if(m[1][8]==0){m[1][8]=158;
+	}
+	if(m[1][5]==0){m[1][5]=158;
+	}		
+	if(m[2][5]==0){m[2][5]=158;
+	}	
+	if(m[3][5]==0){m[3][5]=158;
+	}		
+	if(m[4][5]==0){m[4][5]=158;
+	}
+	if(m[5][6]==0){m[5][6]=158;
+	}
+	if(m[6][6]==0){m[6][6]=158;
+	}
+	if(m[5][7]==0){m[5][7]=158;
+	}
+	if(m[6][7]==0){m[6][7]=158;
+	}			
+	
+		
+	system("cls");
+	
+	textcolor(10);	
+	printf("\n\t\t*******************************\n\t\t Nivel 2 (modo de Juego MEDIO)\n\t\t*******************************\n");
+	textcolor(WHITE);
+	
+//PERDER ///////////////////////////////// xd no he dormido 
+
+
+/*
+
+	//dos cajas arriba derecha
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==219&&m[f-1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f-2][c+1]==219&&m[f-2][c+2]==219)){
+		perder=1;
+		}
+		//dos cajas arriba izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==219&&m[f-1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==219&&m[f-2][c-2]==219)){
+		perder=1;
+		}
+		
+		//abajo acha arriba
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f-3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f-3][c-1]==219)&&m[f-1][c]==206){
+		perder=1;
+		}
+		
+		//dos cajas abajo izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==219&&m[f+1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==219&&m[f+2][c-2]==219)){
+		perder=1;
+		}
+		//dos cajas abajo der
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==219&&m[f+1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f+2][c+1]==219&&m[f+2][c+2]==219)){
+		perder=1;
+		}
+
+		//abajo acha arriba
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206&&m[f+3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&m[f+1][c-1]==206){
+		perder=1;
+		}
+
+
+	
+////	perder	
+//no perder en la llegada 
+
+if(m[1][5]==206||m[1][6]==206||m[1][7]==206||m[1][8]==206){
+perder=0;
+}
+*/
+
+if(m[1][12]==206||m[16][24]==206||m[15][24]==206||m[14][24]==206||m[13][24]==206||m[12][24]==206||m[11][24]==206||m[11][23]==206||m[6][14]==206||m[5][14]==206||m[4][14]==206||m[3][14]==206||m[2][14]==206||m[2][15]==206||m[2][16]==206||m[2][17]==206||m[2][18]==206||m[2][19]==206||m[2][20]==206||m[6][15]==206||m[6][16]==206||m[6][17]==206||m[6][18]==206||m[6][19]==206||m[6][20]==206||m[15][11]==206||m[15][12]==206||m[15][13]==206||m[15][16]==206||m[15][17]==206||m[15][18]==206||m[15][19]==206||m[15][20]==206||m[15][21]==206||m[16][23]==206||m[16][24]==206||m[15][26]==206||m[15][27]==206||m[14][27]==206||m[15][27]==206||m[14][27]==206||m[13][27]==206||m[12][27]==206|| m[11][27]==206|| m[10][27]==206|| m[9][27]==206||m[8][27]==206|| m[7][27]==206|| m[6][27]==206||  m[5][27]==206|| m[4][27]==206|| m[3][27]==206||m[1][4]==206||m[2][4]==206||m[3][4]==206||m[4][4]==206||m[5][4]==206||m[6][4]==206||m[7][4]==206||m[7][4]==206||m[7][5]==206||m[7][6]==206||m[7][7]==206||m[7][8]==206||m[7][9]==206){
+	perder=1;
+}
+/*
+if(((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206)&&(m[f-3][c-1]==206&&m[f-3][c-2]==206))
+||((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206))){
+	perder=1;
+}
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)){
+	perder=1;
+}
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)&&(m[f+3][c-1]==206&&m[f+3][c-2]==206)){
+	perder=1;
+}
+
+/*
+//abajo a ariba
+if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206)&&(m[f-3][c+1]==206&&m[f-4][c+1]==206)||(m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c-1]==206&&m[f-2][c-1]==206)&&(m[f-3][c-1]==206&&m[f-4][c-1]==206)){
+	perder=1;
+}
+//arriba a abajo
+if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206)&&(m[f+3][c+1]==206&&m[f+4][c+1]==206)||(m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c-1]==206&&m[f+2][c-1]==206)&&(m[f+3][c-1]==206&&m[f+4][c-1]==206)){
+	perder=1;
+}
+///perder
+*/
+
+//	
+
+if(m[4][5]==206&&m[3][5]==206&&m[2][5]==206&&m[1][5]==206&&m[4][6]==206&&m[5][6]==206&&
+m[6][6]==206&&m[3][6]==206&&m[2][6]==206&&m[1][6]==206&&m[1][7]==206&&m[2][7]==206&&
+m[3][7]==206&&m[4][7]==206&&m[5][7]==206&&m[6][7]==206&&m[4][8]==206&&m[3][8]==206&&
+m[2][8]==206&&m[1][8]==206){
+perder=0;
+}	
+			
+if(perder==0){
+	printf("\n\t\t  Si Deseas salir Preciona x\n");
+}else{
+	textcolor(0xc);
+		printf("\n\t\t  Si Deseas salir Preciona x\n");
+	textcolor(WHITE);
+}
+
+	imprimir2 (m);	
+	int f;
+	
+	*b=0;
+	
+	f=ganador2(m);
+	
+	if(f==1||tecla=='3'){
+		*b=1;
+		tecla='x';
+	}
+
+    
+	}while(tecla!='x'&&tecla!='X');
+	
+if(tecla=='x'||tecla=='X'){
+return mov2;
+}
+
+	
+}
+
+void imprimir2 (int m[][tam]){
+	
+
+	int vor=0;
+	int i,j;
+	
+
+	printf("\n");
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+			
+						if(m[i][j]==1){
+			textcolor(0xc);
+			printf("%c%c",174,175);
+			textcolor(WHITE);	
+
+			}else{
+				if(m[i][j]!=206&&m[i][j]!=219&&m[i][j]!=158){
+				printf("%c%c",m[i][j],m[i][j]);
+				}
+			
+			}
+				
+			if(m[i][j]==206){
+				
+			if(	m[1][5]==206&&m[1][6]==206&&m[1][7]==206&&m[1][8]==206&&
+				m[2][5]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&
+				m[3][5]==206&&m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&
+				m[4][5]==206&&m[4][6]==206&&m[4][7]==206&&m[4][8]==206&&
+			    m[5][6]==206&&m[5][7]==206&&m[6][6]==206&&m[6][7]==206){
+				
+				vor=1;
+			}//si gana pone verde
+			if(vor==0){	
+			textcolor(0xd);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}else{
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+				vor=0;
+			}
+			
+			
+				
+			}	
+			if(m[i][j]==219){
+			textcolor(0x9);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}
+			if(m[i][j]==158){
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+		
+			}
+
+			
+			
+		}
+		printf("\n");
+	}
+	
+
+}
+
+int ganador2(int m[][tam]){
+	
+	int v=0;
+	
+	if(	m[1][5]==206&&m[1][6]==206&&m[1][7]==206&&m[1][8]==206&&
+	m[2][5]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&
+	m[3][5]==206&&m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&
+	m[4][5]==206&&m[4][6]==206&&m[4][7]==206&&m[4][8]==206&&
+		     m[5][6]==206&&m[5][7]==206&&
+		     m[6][6]==206&&m[6][7]==206){
+			
+			printf("Presione una tecla para continuar... ");
+			getch();
+			system("cls");
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cNIVEL COMPLETADO!!!\n\n",173,173,173);
+			textcolor(WHITE);
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cFELICIDADES!!!\n\n",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cPREPARATE PARA EL TERCER NIVEL!!!",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(15);
+			printf("\n\n\n\n\tPresione una tecla para continuar... ");
+			textcolor(WHITE);	
+			
+
+			getch();
+			
+			v=1;
+		
+		}
+	return v;
+}
+
+// NIVEL 3
+
+void llenar3(int m[][tam],int s){
+	
+	int i,j;
+	
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+			m[i][j]=0;
+																																																
+			
+			 													    m[0][3]=219;	m[0][4]=219;	m[0][5]=219;	m[0][6]=219;	m[0][7]=219;	m[0][8]=219;	m[0][9]=219;	m[0][10]=219;	m[0][11]=219;	m[0][12]=219;	m[0][13]=219;																													
+																	m[1][3]=219;					m[1][5]=158;	m[1][6]=158;	m[1][7]=158;	m[1][8]=158;																   	m[1][13]=219;	m[1][14]=219;	m[1][15]=219;	m[1][16]=219;	m[1][17]=219;	m[1][18]=219;	m[1][19]=219;	m[1][20]=219;	m[1][21]=219;					m[1][23]=219;	m[1][24]=219;	m[1][25]=219;	m[1][26]=219;
+																	m[2][3]=219;					m[2][5]=158;	m[2][6]=158;	m[2][7]=158;	m[2][8]=158;																   	m[2][13]=219;																													m[2][21]=219;	m[2][22]=219;	m[2][23]=219;									m[2][26]=219;	m[2][27]=219;	m[2][28]=219;
+																	m[3][3]=219;					m[3][5]=158;	m[3][6]=158;	m[3][7]=158;	m[3][8]=158;					m[3][10]=219;								   	m[3][13]=219;																																																									m[3][28]=219;
+																	m[4][3]=219;					m[4][5]=158;	m[4][6]=158;	m[4][7]=158;	m[4][8]=158;									m[4][11]=219;				   	m[4][13]=219;																	  																																								m[4][28]=219;
+																	m[5][3]=219;									m[5][6]=158;	m[5][7]=158;																					m[5][13]=219;																							  																																		m[5][28]=219;
+																	m[6][3]=219;									m[6][6]=158;	m[6][7]=158;																					m[6][13]=219;																																 			/*1*/					/*1*/							m[6][26]=219;					m[6][28]=219;
+																	m[7][3]=219;				  					m[7][6]=158;																																																													/*1*/					/*1*/									m[7][26]=219;					m[7][28]=219;												  
+																	m[8][3]=219;									m[8][6]=158;																																																																																					m[8][28]=219;
+																	m[9][3]=219;																																	m[9][12]=219;					m[9][14]=219;																																																					m[9][28]=219;
+																	m[10][3]=219;																																																																																																	m[10][28]=219;
+																	m[11][3]=219;												  																																																	 																																				m[11][28]=219;
+																	m[12][3]=219;																																	m[12][12]=219;					m[12][14]=219;																																																					m[12][28]=219;
+																	m[13][3]=219;																																						   																													  																														m[13][28]=219;
+																	m[14][3]=219;																																									m[14][14]=219;	m[14][15]=219;	m[14][16]=219;																										 											m[14][26]=219;m[14][27]=219;	m[14][28]=219;
+																	m[15][3]=219;									m[15][6]=219;	m[15][7]=219;	m[15][8]=219;	m[15][9]=219;	m[15][10]=219;													m[15][14]=219;				  	m[15][16]=219;																																					m[15][26]=219;					m[15][28]=219;	
+																	m[16][3]=219;																									m[14][10]=219;	m[14][11]=219;																																																																	m[16][28]=219;									
+																	m[17][3]=219;																													m[16][11]=219;																																																																	m[17][28]=219;									
+																	m[18][3]=219;																													m[17][11]=219;	m[17][12]=219;																																																													m[18][28]=219;											
+																	m[19][3]=219;																																	m[18][12]=219;																																																													m[19][28]=219;									
+																	m[20][3]=219;																																	m[19][12]=219;																																																													m[20][28]=219;									
+																	m[21][3]=219;																																																																																																	m[21][28]=219;									
+																	m[22][3]=219;					m[22][5]=219;					m[22][7]=219;																																																	m[22][20]=219;	m[22][21]=219;	m[22][22]=219;																					m[22][28]=219;									
+																	m[23][3]=219;					m[23][5]=219;					m[23][7]=219;																																													m[23][19]=219;	m[23][20]=219;					m[23][22]=219;	m[23][23]=219;																	m[23][28]=219;									
+																	m[24][3]=219;																																																																																																	m[24][28]=219;									
+																	m[25][3]=219;																																																																																																	m[25][28]=219;									
+																	m[26][3]=219;																																																									m[26][18]=219;	m[26][19]=219;	m[26][20]=219;					m[26][22]=219;	m[26][23]=219;	m[26][24]=219;													m[26][28]=219;									
+																	m[27][3]=219;																																																					m[27][17]=219;	m[27][18]=219;					m[27][20]=219;					m[27][22]=219;					m[27][24]=219;	m[27][25]=219;									m[27][28]=219;									
+																	m[28][3]=219;	m[28][4]=219;	m[28][5]=219;	m[28][6]=219;	m[28][7]=219;	m[28][8]=219;	m[28][9]=219;	m[28][10]=219;	m[28][11]=219;	m[28][12]=219;	m[28][13]=219;	m[28][14]=219;	m[28][15]=219;	m[28][16]=219;	m[28][17]=219;									m[28][20]=219;	m[28][21]=219;	m[28][22]=219;									m[28][25]=219;	m[28][26]=219;	m[28][27]=219;	m[28][28]=219;		
+																																																																																																																
+			//cajas 																																																																																										
+																																																																																																
+																																																																																																																																																																																																																									
+			
+			/////// OPCION 1: //////////
+			if(s==1){
+			
+			m[19][22]=206;
+			m[20][22]=206;
+			
+			m[12][26]=206;
+			m[13][26]=206;
+			
+			m[6][22]=206;
+			m[7][22]=206;
+			
+			m[6][24]=206;
+			m[7][24]=206;
+			
+			m[4][23]=206;
+			m[5][23]=206;
+			
+			m[3][15]=206;
+			m[4][15]=206;	
+			
+			m[6][17]=206;
+			m[7][17]=206;
+			
+			m[3][19]=206;
+			m[4][19]=206;
+			
+			m[13][12]=206;
+			m[14][12]=206;
+
+			m[12][19]=206;
+			m[13][19]=206;
+			
+			m[22][6]=206;
+			m[23][6]=206;
+			
+			
+			}
+			//////////////////////////////
+			
+			///////OPCION 2: ///////////
+			if(s==2){
+				
+			m[21][12]=206;
+			m[22][12]=206;
+			
+			m[13][13]=206;
+			m[14][13]=206;
+			
+			m[12][16]=206;
+			m[13][16]=206;
+			
+			m[13][23]=206;
+			m[14][23]=206;
+			
+			m[9][26]=206;
+			m[10][26]=206;
+			
+			m[6][24]=206;
+			m[7][24]=206;
+			
+			m[3][26]=206;
+			m[4][26]=206;
+			
+			m[4][15]=206;
+			m[5][15]=206;
+			
+			m[4][19]=206;
+			m[5][19]=206;
+			
+			m[3][17]=206;
+			m[4][17]=206;
+			
+			m[16][26]=206;
+			m[17][26]=206;	
+			
+			}
+			//////////////////////////////
+			
+			/////OPCION 3: ////////////
+			if(s==3){
+			
+			m[10][13]=206;
+			m[11][13]=206;
+			
+			m[13][17]=206;
+			m[14][17]=206;
+			
+			m[13][20]=206;
+			m[14][20]=206;
+			
+			m[8][16]=206;
+			m[9][16]=206;
+			
+			m[4][21]=206;
+			m[5][21]=206;
+			
+			m[4][16]=206;
+			m[5][16]=206;
+			
+			m[3][23]=206;
+			m[4][23]=206;
+			
+			m[4][26]=206;
+			m[5][26]=206;
+			
+			m[17][19]=206;
+			m[18][19]=206;
+			
+			m[17][18]=206;
+			m[18][18]=206;
+			
+			m[8][21]=206;
+			m[9][21]=206;
+			
+			}
+			/////////////////////////////
+			/////////////////////////////
+			
+		}
+	}
+	
+
+	
+	 
+}
+
+int mover3(int m[][tam],us p2,int *a,us p1){
+	
+	int perder=0;
+	char tecla;
+	*a=0;
+	int mov2=0,cho=0,f=tam/2,c=tam/2;
+	
+	
+	do{
+		p2.movn1=mov2;
+		
+		textcolor(0xc);	
+		printf("%s ",p1.nombre);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf("llevas ");
+		textcolor(WHITE);	
+		
+		textcolor(0xc);	
+		printf("%d",p2.movn1);
+		textcolor(WHITE);
+		
+		textcolor(0x9);	
+		printf(" Movimientos",p2.movn1);
+		textcolor(WHITE);
+		
+				
+		fflush(stdin);
+		tecla=getch();
+		
+		
+			
+		if(tecla==der){
+		
+if(m[f][c+1]==206&&m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f+1][c+1]==206&&m[f][c+2]!=206){
+	m[f][c+1]=1;
+	m[f][c]=0;
+	m[f][c+2]=206;
+	m[f+1][c+2]=206;
+	m[f+1][c+1]=0;
+}
+
+
+		
+		if((m[f][c+1]==206&&m[f][c+2]==219)||(m[f][c+1]==206&&m[f][c+2]==206)){
+			tecla=0;
+		}
+			
+			if((m[f][c+1]==206&&m[f-1][c+1]==206)&&(m[f][c+2]!=219&&m[f-1][c+2]!=206)&&(m[f][c+2]!=206&&m[f-1][c+2]!=219)){
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+				
+			m[f][c+2]=206;
+			m[f-1][c+2]=206;
+			m[f-1][c+1]=0;
+			}//mueve caja si la toca en la derecha inferior
+				
+			if((m[f][c+1]==206&&m[f+1][c+1]==206)&&(m[f][c+2]!=219&&m[f+1][c+2]!=206)&&(m[f][c+2]!=206&&m[f+1][c+2]!=219)){
+			m[f][c+1]=1;
+			m[f][c]=0;
+			m[f][c+2]=206;
+			m[f+1][c+2]=206;
+			m[f+1][c+1]=0;
+			}//mueve caja si la toca en la derecha superior
+
+			if(m[f][c+1]==219){
+			cho=1;
+			}
+
+
+
+			
+			if((m[f][c+1]!=219)&&(m[f][c+1]!=206)){	
+			
+			cho=0;
+			
+			/*if(m[f][c+1]==158&&m[f][c-1]!=219||m[f][c-1]==158){
+			m[f][c+1]=1;
+			m[f][c]=158;
+			c++;
+			
+			}else{*/
+			
+			m[f][c+1]=1;
+			m[f][c]=0;
+			c++;
+					//}								
+			}
+			
+			
+			
+			
+		}		
+		if(tecla==izq){
+	
+	if(m[f][c-1]==206&&m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f+1][c-1]==206&&m[f][c-2]!=206){
+	m[f][c-1]=1;
+	m[f][c]=0;
+	m[f][c-2]=206;
+	m[f+1][c-2]=206;
+	m[f+1][c-1]=0;
+}
+		
+		if((m[f][c-1]==206&&m[f][c-2]==219)||(m[f][c-1]==206&&m[f][c-2]==206)){
+			tecla=0;
+		}
+		
+				if((m[f][c-1]==206&&m[f-1][c-1]==206)&&(m[f][c-2]!=219&&m[f-1][c-2]!=206)&&(m[f][c-2]!=206&&m[f-1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f-1][c-2]=206;
+				m[f-1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir
+				
+				if((m[f][c-1]==206&&m[f+1][c-1]==206)&&(m[f][c-2]!=219&&m[f+1][c-2]!=206)&&(m[f][c-2]!=206&&m[f+1][c-2]!=219)){
+				m[f][c-1]=1;
+				m[f][c]=0;
+				m[f][c-2]=206;
+				m[f+1][c-2]=206;
+				m[f+1][c-1]=0;
+				}//mueve caja si la toca en la derecha inferir		
+			
+			if(m[f][c-1]==219){
+			cho=1;
+			}		
+				
+			if((m[f][c-1]!=219)&&(m[f][c-1]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f][c-1]==158&&m[f][c+1]!=219||m[f][c+1]==158){
+			m[f][c-1]=1;
+			m[f][c]=158;
+			c--;
+			
+			}else{*/
+			
+			m[f][c-1]=1;
+			m[f][c]=0;
+			c--;
+					//}	
+			
+			}//if grande
+			
+		}
+		if(tecla==abajo){
+
+			if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)||(m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==206)){
+			tecla=0;
+			}
+
+				if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]!=219&&m[f+3][c]!=206)){
+				
+				m[f+1][c]=1;
+				m[f][c]=0;
+				m[f+3][c]=206;
+				m[f+2][c]=206;
+				
+				}//arriba a abajo
+				
+		
+			
+			if(m[f+1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f+1][c]!=219)&&(m[f+1][c]!=206)){	
+				
+			cho=0;
+
+		//if(m[f-4][c]!=158&&m[f-1][c]==158){
+			/*if((m[f][c-3]!=158&&m[f][c-1]==158)||(m[f][c+1]==158&&m[f][c-1]!=219)){
+			m[f+1][c]=1;
+			m[f][c]=158;
+			f++;
+			
+			}else{*/
+			
+			m[f+1][c]=1;
+			m[f][c]=0;
+			f++;
+			//	}								
+			}
+			
+
+					
+			
+			
+			
+		}
+		if(tecla==arriba){
+		
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)||(m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==206)){
+			tecla=0;
+			}
+			
+			if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]!=219&&m[f-3][c]!=206)){
+			m[f-1][c]=1;
+			m[f][c]=0;
+			m[f-3][c]=206;
+			m[f-2][c]=206;
+			}//abajo a arriba  		
+			
+			if(m[f-1][c]==219){
+			cho=1;
+			}		
+				
+			if((m[f-1][c]!=219)&&(m[f-1][c]!=206)){
+			
+			cho=0;
+			
+			/*if(m[f-4][c]!=158&&m[f-1][c]==158){
+				
+				m[f-1][c]=1;
+				m[f][c]=158;
+				f--;
+				
+			}else{*/
+				
+				m[f-1][c]=1;
+				m[f][c]=0;
+				f--;
+				//}	
+		
+			}				
+		
+		}
+	
+		if((tecla==arriba||tecla==abajo||tecla==der||tecla==izq)&&cho==0){
+		mov2++;
+		}
+		
+	
+	if(m[4][6]==0){m[4][6]=158;		
+	}
+	if(m[4][7]==0){m[4][7]=158;		
+	}
+	if(m[4][8]==0){m[4][8]=158;
+	}
+	if(m[3][6]==0){m[3][6]=158;
+	}
+	if(m[3][7]==0){m[3][7]=158;
+	}
+	if(m[3][8]==0){m[3][8]=158;
+	}
+	if(m[2][6]==0){m[2][6]=158;		
+	}
+	if(m[2][7]==0){m[2][7]=158;
+	}
+	if(m[2][8]==0){m[2][8]=158;		
+	}
+	if(m[1][6]==0){m[1][6]=158;		
+	}
+	if(m[1][7]==0){m[1][7]=158;	
+	}
+	if(m[1][8]==0){m[1][8]=158;
+	}
+	if(m[1][5]==0){m[1][5]=158;
+	}		
+	if(m[2][5]==0){m[2][5]=158;
+	}	
+	if(m[3][5]==0){m[3][5]=158;
+	}		
+	if(m[4][5]==0){m[4][5]=158;
+	}
+	if(m[5][6]==0){m[5][6]=158;
+	}
+	if(m[6][6]==0){m[6][6]=158;
+	}
+	if(m[5][7]==0){m[5][7]=158;
+	}
+	if(m[6][7]==0){m[6][7]=158;
+	}
+	if(m[7][6]==0){m[7][6]=158;
+	}			
+	if(m[8][6]==0){m[8][6]=158;
+	}				
+		
+	system("cls");
+	
+	textcolor(10);	
+	printf("\n\t\t*******************************\n\t\t Nivel 3 (modo de Juego DIFICIL)\n\t\t*******************************\n");
+	textcolor(WHITE);
+	
+	//PERDER ///////////////////////////////// xd no he dormido 
+	
+/*		
+	
+	//dos cajas arriba derecha
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==219&&m[f-1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f-2][c+1]==219&&m[f-2][c+2]==219)){
+		perder=1;
+		}
+		//dos cajas arriba izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==219&&m[f-1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==219&&m[f-2][c-2]==219)){
+		perder=1;
+		}
+		
+		//abajo acha arriba
+		if((m[f-1][c]==206&&m[f-2][c]==206&&m[f-3][c]==219)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206&&m[f-3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f-1][c-1]==206&&m[f-2][c-1]==206&&m[f-3][c-1]==219)&&m[f-1][c]==206){
+		perder=1;
+		}
+		
+		//dos cajas abajo izquierda
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==219&&m[f+1][c-2]==219)){
+		perder=1;
+		}
+		if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==219&&m[f+2][c-2]==219)){
+		perder=1;
+		}
+		//dos cajas abajo der
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==219&&m[f+1][c+2]==219)){
+		perder=1;
+		}
+		if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f+2][c+1]==219&&m[f+2][c+2]==219)){
+		perder=1;
+		}
+
+		//abajo acha arriba
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206&&m[f+3][c+1]==219)){
+		perder=1;
+		}
+
+		if((m[f+1][c]==206&&m[f+2][c]==206&&m[f+3][c]==219)&&m[f+1][c-1]==206){
+		perder=1;
+		}
+
+	
+	
+////	perder	
+	
+	//no perder en la llegada 
+
+if(m[1][5]==206||m[1][6]==206||m[1][7]==206||m[1][8]==206){
+perder=0;
+}
+*/
+//	
+	
+	
+	
+	
+if(m[1][27]==206||m[2][27]==206||m[3][27]==206||m[4][27]==206||m[5][27]==206||m[6][27]==206||m[7][27]==206||m[8][27]==206||m[9][27]==206||m[10][27]==206||m[11][27]==206||m[12][27]==206||m[13][27]==206||m[15][27]==206||m[16][27]==206||m[17][27]==206||m[18][27]==206||m[19][27]==206||m[20][27]==206||m[21][27]==206||m[22][27]==206||m[23][27]==206||m[24][27]==206||m[25][27]==206||m[26][27]==206||m[27][27]==206||
+m[1][12]==206||m[1][4]==206||m[2][4]==206||m[3][4]==206||m[4][4]==206||m[5][4]==206||m[6][4]==206||m[7][4]==206||m[8][4]==206||m[9][4]==206||m[10][4]==206||m[11][4]==206||m[12][4]==206||m[13][4]==206||m[14][4]==206||m[15][4]==206||m[16][4]==206||m[17][4]==206||m[18][4]==206||m[19][4]==206||m[20][4]==206||m[21][4]==206||m[22][4]==206||m[23][4]==206||m[24][4]==206||m[25][4]==206||m[26][4]==206||m[27][4]==206||
+m[27][4]==206||m[27][5]==206||m[27][6]==206||m[27][7]==206||m[27][8]==206||m[27][9]==206||m[27][10]==206||m[27][11]==206||m[27][12]==206||m[27][13]==206||m[27][14]==206||m[27][15]==206||m[27][16]==206||m[2][20]==206||m[2][19]==206||m[2][18]==206||m[2][17]==206||m[2][16]==206||m[2][15]==206||m[2][14]==206||m[28][26]==206||m[27][21]==206||m[26][21]==206||m[23][21]==206||m[16][12]==206||m[18][11]==206||m[13][10]==206){
+	perder=1;
+}
+
+/*
+if(((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f-2][c+1]==206&&m[f-2][c+2]==206)&&(m[f-3][c+1]==206&&m[f-3][c+2]==206))
+||((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f-2][c+1]==206&&m[f-2][c+2]==206))){
+	perder=1;
+}
+if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f-1][c+1]==206&&m[f-1][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f+2][c+1]==206&&m[f+2][c+2]==206)){
+	perder=1;
+}
+if((m[f][c+1]==206&&m[f][c+2]==206)&&(m[f+1][c+1]==206&&m[f+1][c+2]==206)&&(m[f+2][c+1]==206&&m[f+2][c+2]==206)&&(m[f+3][c+1]==206&&m[f+3][c+2]==206)){
+	perder=1;
+}
+
+if(((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206)&&(m[f-3][c-1]==206&&m[f-3][c-2]==206))
+||((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f-2][c-1]==206&&m[f-2][c-2]==206))){
+	perder=1;
+}
+
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f-1][c-1]==206&&m[f-1][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)){
+	perder=1;
+}
+if((m[f][c-1]==206&&m[f][c-2]==206)&&(m[f+1][c-1]==206&&m[f+1][c-2]==206)&&(m[f+2][c-1]==206&&m[f+2][c-2]==206)&&(m[f+3][c-1]==206&&m[f+3][c-2]==206)){
+	perder=1;
+}
+
+/*
+//abajo a ariba
+if((m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c+1]==206&&m[f-2][c+1]==206)&&(m[f-3][c+1]==206&&m[f-4][c+1]==206)||(m[f-1][c]==206&&m[f-2][c]==206)&&(m[f-3][c]==206&&m[f-4][c]==206)&&(m[f-1][c-1]==206&&m[f-2][c-1]==206)&&(m[f-3][c-1]==206&&m[f-4][c-1]==206)){
+	perder=1;
+}
+//arriba a abajo
+if((m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c+1]==206&&m[f+2][c+1]==206)&&(m[f+3][c+1]==206&&m[f+4][c+1]==206)||(m[f+1][c]==206&&m[f+2][c]==206)&&(m[f+3][c]==206&&m[f+4][c]==206)&&(m[f+1][c-1]==206&&m[f+2][c-1]==206)&&(m[f+3][c-1]==206&&m[f+4][c-1]==206)){
+	perder=1;
+}
+///perder
+*/	
+			
+if(perder==0){
+	printf("\n\t\t  Si Deseas salir Preciona x\n");
+}else{
+	textcolor(0xc);
+		printf("\n\t\t  Si Deseas salir Preciona x\n");
+	textcolor(WHITE);
+}
+
+
+
+	imprimir3 (m);	
+	int f;
+	f=ganador3(m);
+	if(f==1||tecla=='4'){
+		*a=1;
+		tecla='x';
+	}
+
+    
+	}while(tecla!='x'&&tecla!='X');
+	
+if(tecla=='x'||tecla=='X'){
+return mov2;
+}
+
+	
+}
+
+void imprimir3 (int m[][tam]){
+	
+
+	int vor=0;
+	int i,j;
+	
+
+	printf("\n");
+	for(i=0;i<tam;i++){
+		for(j=0;j<tam;j++){
+			
+						if(m[i][j]==1){
+			textcolor(0xc);
+			printf("%c%c",174,175);
+			textcolor(WHITE);	
+
+			}else{
+				if(m[i][j]!=206&&m[i][j]!=219&&m[i][j]!=158){
+				printf("%c%c",m[i][j],m[i][j]);
+				}
+			
+			}
+				
+			if(m[i][j]==206){
+				
+			if(	m[1][5]==206&&m[1][6]==206&&m[1][7]==206&&m[1][8]==206&&
+				m[2][5]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&
+				m[3][5]==206&&m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&
+				m[4][5]==206&&m[4][6]==206&&m[4][7]==206&&m[4][8]==206&&
+			    m[5][6]==206&&m[5][7]==206&&m[6][6]==206&&m[6][7]==206&&m[8][6]==206&&m[7][6]==206){
+				
+				vor=1;
+			}//si gana pone verde
+			if(vor==0){	
+			textcolor(0xd);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}else{
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+				vor=0;
+			}
+			
+			
+				
+			}	
+			if(m[i][j]==219){
+			textcolor(0x9);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+			}
+			if(m[i][j]==158){
+			textcolor(10);
+			printf("%c%c",m[i][j],m[i][j]);
+			textcolor(WHITE);
+		
+			}
+
+			
+			
+		}
+		printf("\n");
+	}
+	
+
+}
+
+int ganador3(int m[][tam]){
+	
+	int v=0;
+	
+	if(	m[1][5]==206&&m[1][6]==206&&m[1][7]==206&&m[1][8]==206&&
+	m[2][5]==206&&m[2][6]==206&&m[2][7]==206&&m[2][8]==206&&
+	m[3][5]==206&&m[3][6]==206&&m[3][7]==206&&m[3][8]==206&&
+	m[4][5]==206&&m[4][6]==206&&m[4][7]==206&&m[4][8]==206&&
+		     m[5][6]==206&&m[5][7]==206&&m[6][6]==206&&m[6][7]==206&&m[8][6]==206&&m[7][6]==206){
+			
+			printf("Presione una tecla para continuar... ");
+			getch();
+			system("cls");
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cNIVEL COMPLETADO!!!\n\n",173,173,173);
+			textcolor(WHITE);
+		
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cFELICIDADES!!!\n\n",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(0xc);
+			printf("\n\n\t%c%c%cHAS COMPLETADOS TODOS LOS NIVELES !!!",173,173,173);
+			textcolor(WHITE);
+			
+			textcolor(15);
+			printf("\n\n\n\n\tPresione una tecla para continuar... ");
+			textcolor(WHITE);	
+			
+
+			getch();
+			
+			v=1;
+		}
+	return v;
+}
+
+int portada(){
+
+int num,ctrs,ctrso=1234;
+char salir=0;
+char x=0;
+
+//////////////////////////////////////////
+	int i,j,m[10][35];
+	
+int veces=20;
+	int p=2;
+	
+for(veces=0;veces<20;veces++){
+	
+	for(i=0;i<10;i++){
+		for(j=0;j<35;j++){
+			
+			m[i][j]=0;
+			m[8][2]=158;
+			m[9][2]=158;
+			m[8][3]=158;
+			m[9][3]=158;
+			
+			m[8][15]=158;
+			m[9][16]=158;
+			m[8][16]=158;
+			m[9][15]=158;
+			//	sokoban
+			m[p-2][6]='S';m[p-2][7]='o';m[p-2][8]='k';;m[p-2][9]='o';m[p-2][10]='b';m[p-2][11]='a';m[p-2][12]='n';
+			m[p-6][6]='J';m[p-6][7]='e';m[p-6][8]='s';;m[p-6][9]=163;m[p-6][10]='s';m[p-6][11]='_';m[p-6][12]='G';
+			
+			
+			m[p-1][2]=174;
+			m[p-1][3]=175;
+			
+			m[p][2]=206;
+			m[p+1][2]=206;
+			m[p][3]=206;
+			m[p+1][3]=206;
+			
+			m[p-1][15]=174;
+			m[p-1][16]=175;
+			
+			m[p][15]=206;
+			m[p+1][15]=206;
+			m[p][16]=206;
+			m[p+1][16]=206;
+			
+			if(m[i][j]==0){
+			printf("%c",m[i][j]);
+			}
+				
+			if(m[i][j]==206){
+				textcolor(0xd);
+				printf("%c",m[i][j]);
+				textcolor(WHITE);
+			}
+			
+			if(m[i][j]==174||m[i][j]==175){
+				textcolor(0xc);
+				printf("%c",m[i][j]);
+				textcolor(WHITE);
+			}
+			
+			if(m[i][j]==158){
+				textcolor(10);
+				printf("%c",m[i][j]);
+				textcolor(WHITE);
+			}
+			
+			if(m[i][j]=='S'||m[i][j]=='o'||m[i][j]=='k'||m[i][j]=='b'||m[i][j]=='a'||m[i][j]=='n'){
+				textcolor(15);
+				printf("%c",m[i][j]);
+				textcolor(WHITE);
+			}
+			if(m[i][j]=='J'||m[i][j]=='e'||m[i][j]=='s'||m[i][j]==163||m[i][j]=='s'||m[i][j]=='_'||m[i][j]=='G'){
+				textcolor(15);
+				printf("%c",m[i][j]);
+				textcolor(WHITE);
+			}
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		}
+		printf("\n");
+	}
+p++;
+if(p>8)p=0;
+	printf("\n");
+	Sleep(400);	
+	system("cls");
+}
+
+
+//////////////////////////////////////////
+
+do{
+	system("cls");
+
+	
+	textcolor(15);
+	printf("\n\t\tSokoban\n\n");
+	textcolor(WHITE);
+	
+	textcolor(10);
+	printf("\t1. Jugar\n");	
+	textcolor(WHITE);
+	
+	textcolor(18);
+	printf("\t2. Instrucciones\n");
+	textcolor(WHITE);
+	
+	textcolor(20);
+	printf("\t3. Trucos\n");
+	textcolor(WHITE);
+	
+	textcolor(0xc);
+	printf("\t4. Salir\n");
+	textcolor(WHITE);
+
+	textcolor(15);
+	printf("\tTECLAS PARA JUGAR %c %c %c\n\n",60,94,62);
+	printf("   arriba = FLECHA HACIA ARRIBA ");
+	printf("\n   abajo = FLECHA HACIA ABAJO ");
+	printf("\n   derecha = FLECHA HACIA LA DERECHA ");
+	printf("\n   izquierda = FLECHA HACIA LA IZQUIERDA ");
+
+	textcolor(WHITE);
+
+	
+
+	textcolor(15);
+	printf("\n\n  Ingrese un numero del Menu: ");
+	
+	
+	
+	
+	fflush(stdin);
+	scanf("%d",&num);
+	textcolor(WHITE);
+
+
+	
+
+switch(num) {
+	
+	case 1:
+
+	return 1;
+
+	break;
+	
+	
+	
+	case 2:
+	
+	system("cls");
+	
+	
+	textcolor(10);
+	printf("\n\tInstrucciones. ");
+	textcolor(WHITE);
+	
+	textcolor(15);
+	printf("\n\n\n\tEmpuja las cajas hasta su lugar correcto dentro de un reducido almac%cn,\n\n",130);
+	printf("\tdebes hacerlo con el n%cmero m%cnimo de empujes y de pasos. Las cajas se pueden empujar solamente,\n\n",163,161);
+	printf("\ty no tirar de ellas, y s%clo se puede empujar una caja a la vez. Parece f%ccil,\n\n",162,161);
+	printf("\tpero aveces es complejos, cada vez que termines un nivel presiona enter para pasar al sigiente\n\n");
+	printf("\tcuando las teclas de SALIDA se pongan");
+	textcolor(WHITE);
+	textcolor(0xc);
+	printf(" ROJAS ");
+	textcolor(WHITE);
+	textcolor(15);
+	printf("es por que PERDISTE. porque ya no quedan movimientos \n\n");
+	textcolor(WHITE);
+	
+	getch();
+	
+	break;
+	
+	
+	
+	
+	case 3:system("cls");
+do{
+
+	system("cls");
+	
+	textcolor(0xc);
+	printf("\n\tTrucos." );
+	textcolor(WHITE);
+	textcolor(10);
+	printf(" la contrase%ca esta al finalalizar el nivel 3 [Buena Suerte])",164);
+	textcolor(WHITE);
+	textcolor(0xd);
+	printf("\n\n\tIngrese Contrase%ca: ",164);
+	fflush(stdin);
+	
+	scanf("%d",&ctrs);
+	textcolor(WHITE);	
+	if(ctrs==ctrso){
+		
+	textcolor(15);
+		printf("\n\tExisten atajos para pasar a los niveles sigueintes presionando una tecla en espesifico en cada uno de ellos\n");
+		printf("\n\ta continuacci%cn te mostramos cuales son: \n\n",162);
+	textcolor(WHITE);	
+	
+	textcolor(15);
+		printf("\tSi Presionas la tacla ");
+	textcolor(WHITE);	
+	textcolor(0xc);		
+		printf("2 ");
+	textcolor(WHITE);		
+	textcolor(15);		
+		printf("en el\n\t");
+	textcolor(WHITE);		
+		textcolor(10);		
+		printf("Nivel 1");
+	textcolor(WHITE);		
+		textcolor(15);		
+		printf(" pasaras al siguiente nivel es decir a el ");
+	textcolor(WHITE);		
+		textcolor(10);		
+		printf("Nivel 2");
+	textcolor(WHITE);		
+	textcolor(15);		
+		printf(" si estas ");
+	textcolor(WHITE);		
+	textcolor(15);		
+		printf("en el\n\t");
+	textcolor(WHITE);
+	textcolor(10);		
+		printf("Nivel 2");
+	textcolor(WHITE);
+	textcolor(15);		
+		printf(" y presionas la tecla ");
+	textcolor(WHITE);	
+	textcolor(0xc);	
+		printf("3");
+	textcolor(WHITE);
+	textcolor(15);		
+		printf(" pasaras al ");
+	textcolor(WHITE);
+	textcolor(10);		
+		printf("Nivel 3");
+	textcolor(WHITE);
+	
+	textcolor(15);		
+	printf("\n\ty si estas en el ");
+	textcolor(WHITE);
+	
+	textcolor(10);		
+	printf("Nivel 3");
+	textcolor(WHITE);
+	
+	textcolor(15);		
+	printf(" y deseas terminar ");
+	textcolor(WHITE);
+	textcolor(15);
+	printf("solo Presionas la tacla ");
+	textcolor(WHITE);	
+	textcolor(0xc);		
+	printf("4");
+	textcolor(WHITE);		
+	
+	
+			
+		textcolor(15);
+		printf("\n\n\tPresione una tecla para ir al menu principal... ");
+		textcolor(WHITE);
+		
+		getch();
+		
+		break;
+		
+	}else{
+		textcolor(15);
+		printf("\n\tError!!!");
+		
+		printf("\n\n\tsi deseas salir al menu principal presione (x) \n\n\to Presione otra tecla diferente a x, para intentar de nuevo... ");
+		fflush(stdin);
+		scanf("%c",&x);
+		textcolor(WHITE);
+		if(x=='x'||x=='X'){
+			break;
+		}
+		
+	
+	}
+}while(ctrs!=ctrso&&x!='s'&&x!='S');
+
+
+	break;
+	
+	
+	case 4:system("cls");
+	printf("\n\t Esta seguro que desea Salir (s/n): ");
+	fflush(stdin);
+	scanf("%c",&salir);
+	if(salir=='s'||salir=='S'){
+	salir=1;	
+	}else{
+		salir=0;
+	}
+	
+	break;
+	
+	
+	
+	default:
+	system("cls");
+	printf("\n\tPor Favor intente de nuevo\n\n\tPresione una Tecla para Continuar...");getch();
+	break;
+	
+	
+	
+	}//swintch
+
+
+
+}while((num!=1||num!=2||num!=3)&&salir==0);
+
+return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
